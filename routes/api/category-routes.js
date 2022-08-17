@@ -27,12 +27,28 @@ router.get('/:id', async (req, res) => {
   };
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   // create a new category
+  try {
+    const category = await Category.create(req.body);
+    res.status(200).json(category);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   // update a category by its `id` value
+  try {
+    const updateReturnVal = await Category.update(req.body, {
+      where: {
+        id: req.params.id,
+      },
+    });
+    res.status(200).json(updateReturnVal);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 });
 
 router.delete('/:id', async (req, res) => {
