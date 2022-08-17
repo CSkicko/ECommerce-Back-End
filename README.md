@@ -41,7 +41,7 @@ sequelize.sync({ force: false }).then(() => {
 ```
 
 A demonstration of the application is provided within the walkthrough video:
-[Walkthrough]()
+[Walkthrough](./Walkthrough.mp4)
 
 ## Collaborators
 The following personnel have been involved in the devleopment of this application:
