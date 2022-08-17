@@ -54,8 +54,38 @@ router.post('/', async (req, res) => {
   };
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   // update a tag's name by its `id` value
+  try {
+    const updateReturnVal = await Tag.update(req.body, {
+      where: {
+        id: req.params.id,
+      },
+    });
+    // Find all current associations where the tag id is present and remove them
+    const destroyReturnValue = await ProductTag.destroy({
+      where: { tag_id: req.params.id}
+    });
+    
+    // Add updated associations for the tag
+    if (req.body.products.length) {
+      const prodTagArray = req.body.products.map((product_id) => {
+        return {
+          product_id,
+          tag_id: req.params.id,
+        };
+      });
+      // Create the new relationships in the ProductTag table
+      const createdLinks = await ProductTag.bulkCreate(prodTagArray);
+      res.status(200).json([updateReturnVal, createdLinks]);
+
+    } else {
+      res.status(200).json(updateReturnVal);
+    };
+
+  } catch (err) {
+    res.status(400).json(err);
+  }
 });
 
 router.delete('/:id', async (req, res) => {
